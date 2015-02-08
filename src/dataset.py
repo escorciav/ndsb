@@ -1,12 +1,12 @@
 import glob
 import os
+import tempfile
 
 import numpy as np
 from skimage.io import imread, imsave
 from skimage.transform import resize, rotate
 
-def data_augmentation(img_name, angles=range(0, 181, 30),
-                      max_pixel=60, prefix=''):
+def data_augmentation(img_name, angles=[], max_pixel=0, prefix=''):
     """Create many images from one training sample
     """
     n_images, img_list = len(angles), []
@@ -120,4 +120,29 @@ def samples_per_categories(argument):
    else:
        raise 'Sorry, Im working on that'
    return samples_per_cat
+
+def save_augmented_dataset(img_list, img_labels, outdir,
+                           prm={'angles':range(0, 181, 30), 'max_pixel':60}):
+    """Create a folder with the augmented training set
+
+    Parameters
+    ----------
+    outdir : string
+        Name of folder to allocate augmented training set
+    prm : dict
+        parameters for data augmentation function
+
+    """
+    try:
+        os.makedirs(outdir)
+    except Exception, e:
+        raise e
+    dataset_list, dataset_labels = [], []
+    for (fullpath, label) in zip(img_list, img_labels):
+        with tempfile.NamedTemporaryFile(dir=outdir) as temp:
+            prefix = temp.name + '_' + str(label)
+        aug_img = data_augmentation(fullpath, prefix=prefix, **prm)
+        dataset_list += aug_img
+        dataset_labels += [label] * len(aug_img)
+    return dataset_list, dataset_labels
 
