@@ -6,6 +6,30 @@ import numpy as np
 from skimage.io import imread, imsave
 from skimage.transform import resize, rotate
 
+#TODO: Create a tuple with (img_list, img_labels) for create_val_set and
+#      save_augmented_dataset
+
+def create_partition(img_list, img_labels, pctg=0.3):
+    """Create a balanced partition of the whole training set
+
+    TODO
+    ----
+    1. Include argument to set seed for pseudo-random number generation
+    """
+    instances_per_cat = samples_per_categories(img_labels)
+    instances_to_sample = pctg * min(instances_per_cat)
+    assert instances_to_sample == 0, 'Insufficient data to create partition'
+
+    labels_array, idx_train, idx_test = np.array(img_labels), [], []
+    for i in range(0, len(instances_per_cat)):
+        idx_cat_i = np.nonzero(labels_array == i)[0]
+        idx = np.random.choice(idx_cat_i, size=instances_to_sample,
+                               replace=False)
+        idx_test += idx_cat_i[idx].tolist()
+        idx_train += list(set(idx_cat_i.tolist()) -
+                          set(idx_test[-instances_to_sample:]))
+    return idx_train, idx_test
+
 def data_augmentation(img_name, angles=[], max_pixel=0, prefix=''):
     """Create many images from one training sample
     """
@@ -118,7 +142,7 @@ def samples_per_categories(argument):
        for i in labels:
            samples_per_cat.append(len(folder_content1(i, False)))
    else:
-       raise 'Sorry, Im working on that'
+       samples_per_cat = np.bincount(argument).tolist()
    return samples_per_cat
 
 def save_augmented_dataset(img_list, img_labels, outdir,
