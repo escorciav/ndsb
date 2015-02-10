@@ -9,25 +9,39 @@ from skimage.transform import resize, rotate
 #TODO: Create a tuple with (img_list, img_labels) for create_val_set and
 #      save_augmented_dataset
 
-def create_partition(img_list, img_labels, pctg=0.3):
-    """Create a balanced partition of the whole training set
+def balanced_dataset(img_labels, min_samples=500):
+    """
+    Return a list with indexes to augment the dataset such that categories with
+    few examples get a minimum number of samples
+    """
+    instances_per_cat = samples_per_categories(img_labels)
+    labels_array, idx = np.array(img_labels), []
+    for i, v in enumerate(instances_per_cat):
+        idx_cat_i = np.nonzero(labels_array == i)[0]
+        ntimes = np.ceil(min_samples*1.0/idx_cat_i.size)
+        idx += np.tile(idx_cat_i, ntimes).tolist()[:min_samples]
+    return idx
+
+def create_partition(img_labels, pctg=0.3):
+    """
+    Return two list of indexes which combined form the whole training set.
+    This function creates a balanced validation set
 
     TODO
     ----
     1. Include argument to set seed for pseudo-random number generation
     """
     instances_per_cat = samples_per_categories(img_labels)
-    instances_to_sample = pctg * min(instances_per_cat)
-    assert instances_to_sample == 0, 'Insufficient data to create partition'
+    instances_to_sample = int(pctg * min(instances_per_cat))
+    assert instances_to_sample >= 0, 'Insufficient data to create partition'
 
     labels_array, idx_train, idx_test = np.array(img_labels), [], []
     for i in range(0, len(instances_per_cat)):
         idx_cat_i = np.nonzero(labels_array == i)[0]
-        idx = np.random.choice(idx_cat_i, size=instances_to_sample,
-                               replace=False)
-        idx_test += idx_cat_i[idx].tolist()
-        idx_train += list(set(idx_cat_i.tolist()) -
-                          set(idx_test[-instances_to_sample:]))
+        samples = np.random.choice(idx_cat_i, size=instances_to_sample,
+                                   replace=False).tolist()
+        idx_test += samples
+        idx_train += list(set(idx_cat_i.tolist()) - set(samples))
     return idx_train, idx_test
 
 def data_augmentation(img_name, angles=[], max_pixel=0, prefix=''):
@@ -64,7 +78,8 @@ def img_resolution_list(image_list):
 
 
 def label_list(folder):
-    """Return categories inside the passed folder
+    """
+    Return categories inside the passed folder
     
     Parameters
     ----------
@@ -108,8 +123,9 @@ def train_folder():
     return os.path.join(root, 'train')
 
 def train_list(folder):
-    """Return two list: (1) fullpath name of images and (2) indexes of their
-       categories (0-indexed)
+    """
+    Return two list: (1) fullpath name of images and (2) indexes of their
+    categories (0-indexed)
 
     Parameters
     ----------
@@ -147,7 +163,8 @@ def samples_per_categories(argument):
 
 def save_augmented_dataset(img_list, img_labels, outdir,
                            prm={'angles':range(0, 181, 30), 'max_pixel':60}):
-    """Create a folder with the augmented training set
+    """
+    Create a folder with the augmented training set
 
     Parameters
     ----------
