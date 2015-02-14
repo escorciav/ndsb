@@ -5,6 +5,7 @@ import tempfile
 import numpy as np
 from skimage.io import imread, imsave
 from skimage.transform import resize, rotate
+from sklearn.cross_validation import StratifiedKFold
 
 #TODO: Create a tuple with (img_list, img_labels) for create_val_set and
 #      save_augmented_dataset
@@ -18,11 +19,11 @@ def balanced_dataset(img_labels, min_samples=500):
     labels_array, idx = np.array(img_labels), []
     for i, v in enumerate(instances_per_cat):
         idx_cat_i = np.nonzero(labels_array == i)[0]
-        ntimes = np.ceil(min_samples*1.0/idx_cat_i.size)
+        ntimes = int(np.ceil(min_samples*1.0/idx_cat_i.size))
         idx += np.tile(idx_cat_i, ntimes).tolist()[:min_samples]
     return idx
 
-def create_partition(img_labels, pctg=0.3):
+def balanced_partition(img_labels, pctg=0.3):
     """
     Return two list of indexes which combined form the whole training set.
     This function creates a balanced validation set
@@ -186,4 +187,17 @@ def save_augmented_dataset(img_list, img_labels, outdir,
         dataset_list += aug_img
         dataset_labels += [label] * len(aug_img)
     return dataset_list, dataset_labels
+
+def stratified_partition(img_labels, pctg=0.3):
+    """
+    Return two list of indexes which combined form the whole training set.
+    This function keep the distribution of samples of the training set
+    """
+    assert pctg<=0.5, 'Invalid percentage. It must be <= 0.5'
+
+    skf = StratifiedKFold(img_labels, n_folds=np.ceil(1/pctg), shuffle=True)
+    idx = skf.test_folds == 0
+    idx_test =  np.nonzero(idx)[0].tolist()
+    idx_train = np.nonzero(1 - idx)[0].tolist()
+    return idx_train, idx_test
 
