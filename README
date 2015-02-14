@@ -1,0 +1,16 @@
+This repo contains important files that I create for my participation on the
+"National Science Bowl" competition of Kaggle.
+
+ROADMAP
+-------
+1. Download data provided by kaggle in folder "data"
+
+2. Create a virtual enviroment to interact with python without disturbing other
+projects
+
+3. Data statistics
+
+4. Data Augmentation: just rotations, translations are considered on caffe
+interface if receptive field is smaller than image resolution
+
+5. 

@@ -2,3 +2,6 @@ plankton_identification.pdf
 sampleSubmission.csv
 train*
 test*
+
+# Info and data of augmented dataset
+aug*
