@@ -7,4 +7,4 @@ test*
 aug*
 
 # data generated/used by caffe
-*.bynaryproto
+*.binaryproto

@@ -6,7 +6,7 @@ import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
 
-DFLT_OUTFILE = 'data/mean.bynaryproto'
+DFLT_OUTFILE = 'data/mean.binaryproto'
 HELP_OUTFILE = 'Name of the protobinary file with the mean'
 DFLT_INFILE = 'data/aug.p'
 HELP_INFILE = 'Name of pickle file with info about dataset'
