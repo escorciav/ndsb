@@ -20,7 +20,7 @@ def main(data_outdir='', aug_prm={}, pctil=0.75, nfold=3.0, **kwargs):
                                                    dataset_info[1],
                                                    data_outdir, aug_prm)
     idx_train, idx_test = data.stratified_partition(aug_dataset_info[1],
-                                                    1/nfold) 
+                                                    1/nfold)
 
     train_info = ([aug_dataset_info[0][i] for i in idx_train],
                   [aug_dataset_info[1][i] for i in idx_train])
