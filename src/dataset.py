@@ -203,10 +203,10 @@ def test_folder():
     root = root_folder()
     return os.path.join(root, 'test')
 
-def test_list(folder):
+def test_list(folder=test_folder()):
     """Return a list with fullpath name of images on the testing set
-    """
-    return folder_content1(test_folder())
+    """ 
+    return folder_content1(folder)
 
 def train_folder():
     """Returns the absolute path of the test folder
@@ -214,7 +214,7 @@ def train_folder():
     root = root_folder()
     return os.path.join(root, 'train')
 
-def train_list(folder):
+def train_list(folder=train_folder()):
     """
     Return two list: (1) fullpath name of images and (2) indexes of their
     categories (0-indexed)
