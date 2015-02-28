@@ -8,3 +8,4 @@ aug*
 
 # data generated/used by caffe
 *.binaryproto
+nn0*
