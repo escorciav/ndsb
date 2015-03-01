@@ -11,10 +11,10 @@ fi
 
 if [ -z "$1"  ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] || [ -z "$5" ] || [ -z "$6" ]
 then
-  echo "Usage: resume.sh GPU_ID SOLVER_PROTOTXT MODEL_PROTOBIN BLOB OUTPUT_FILE OUTPUT_TYPE TEST_ITER(default=6520)"
+  echo "Usage: test.sh GPU_ID SOLVER_PROTOTXT MODEL_PROTOBIN BLOB OUTPUT_FILE OUTPUT_TYPE TEST_ITER(default=6520)"
 else
   $CAFFE_PATH $3 $2 $4 $5 $TEST_ITER $6 GPU $1
-fi
 
-echo "Assuming a database of features with 1304000 entries"
-python src/s.save_csv.py new_entry.csv -i $5
+  echo "Assuming a database of features with 1304000 entries"
+  python src/s.save_csv.py new_entry.csv -i $5
+fi
