@@ -47,7 +47,8 @@ def main(data_outdir='', aug_prm={}, pctil=0.75, nfold=3.0, **kwargs):
     return None
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('-do', '--data_outdir', type=str, default=DFLT_OUTDIR,
                    help=HELP_OUTDIR)
     p.add_argument('-p', '--aug_prm', type=json.loads, default=DFLT_AUGMENT_PRM,

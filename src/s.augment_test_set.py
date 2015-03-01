@@ -27,7 +27,8 @@ def main(data_outdir, max_pixel, crop_size, **kwargs):
     return None
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('-do', '--data_outdir', type=str, default=DFLT_OUTDIR,
                    help=HELP_OUTDIR)
     p.add_argument('-r', '--resolution', type=int, default=DFLT_MAX_PIXEL,

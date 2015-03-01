@@ -44,7 +44,8 @@ def save_binaryproto(filename, arr):
     return None
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument('-o', '--out_file', type=str, default=DFLT_OUTFILE,
                    help=HELP_OUTFILE)
     p.add_argument('-p', '--in_file', type=str, default=DFLT_INFILE,
