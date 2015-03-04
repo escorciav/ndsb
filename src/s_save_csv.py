@@ -1,7 +1,7 @@
 import argparse
 import os
 
-import matplotlib 
+import matplotlib
 matplotlib.use('Agg')
 
 from caffe.io import caffe_pb2, datum_to_array

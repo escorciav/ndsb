@@ -9,3 +9,6 @@ aug*
 # data generated/used by caffe
 *.binaryproto
 nn0*
+
+# Submissions
+*.csv
