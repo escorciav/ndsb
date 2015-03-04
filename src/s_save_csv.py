@@ -1,7 +1,10 @@
 import argparse
 import os
 
-import caffe
+import matplotlib 
+matplotlib.use('Agg')
+
+from caffe.io import caffe_pb2, datum_to_array
 import leveldb
 import numpy as np
 import pandas as pd
@@ -39,7 +42,7 @@ def get_blob_size(db, key='0'):
     """Return blob size
     """
     val = db.Get(key)
-    datum = caffe.io.caffe_pb2.Datum()
+    datum = caffe_pb2.Datum()
     datum.ParseFromString(val)
     return (datum.channels, datum.height, datum.width)
 
@@ -51,9 +54,9 @@ def levedb_to_array(filename, n_keys):
     dim = blob_sz[0] * blob_sz[1] * blob_sz[2]
     db_mem = np.empty((n_keys, dim), np.float32)
     for key, val in db.RangeIter():
-        datum = caffe.io.caffe_pb2.Datum()
+        datum = caffe_pb2.Datum()
         datum.ParseFromString(val)
-        arr = caffe.io.datum_to_array(datum)
+        arr = datum_to_array(datum)
         db_mem[int(key), :] = arr.flatten()
     return db_mem
 

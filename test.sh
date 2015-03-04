@@ -25,5 +25,5 @@ else
   $CAFFE_PATH $3 $2 $4 $5 $TEST_ITER $6 GPU $1
 
   echo "Assuming a database of features with 1304000 entries"
-  python src/s.save_csv.py $CSV_FILE -i $5
+  python src/s_save_csv.py $CSV_FILE -i $5
 fi
