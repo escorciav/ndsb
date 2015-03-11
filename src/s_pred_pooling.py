@@ -30,7 +30,7 @@ def read_cat_csvfiles(csv_files):
 
 def main(csv_files, output_file, pool_stg):
     pred_arr = read_cat_csvfiles(csv_files)
-    result = feat_pooling(pred_arr)
+    result = feat_pooling(pred_arr, pool_stg)
     dump_results(output_file, result)
     return None
 
