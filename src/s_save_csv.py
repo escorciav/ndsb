@@ -16,6 +16,8 @@ HELP_INPUT = 'Fullpath of file/folder with results'
 DFLT_NKEYS = 1304000
 HELP_NKEYS = 'Number of keys in the database'
 HELP_OUTPUT ='Name of csv file for submission'
+HELP_AVG = 'Non-overlapping average of results every 10 entries'
+HELP_FORMAT = 'Standard used for output file'
 
 #TODO: save csv
 
@@ -28,7 +30,7 @@ def average_crops(arr):
         avg[i, :] = np.mean(arr[idx1:idx2, :], axis=0)
     return avg
 
-def dump_results(filename, arr):
+def dump_csv(filename, arr):
     """Save arr as CSV
     """
     labels = data.label_list(data.train_folder())
@@ -36,7 +38,7 @@ def dump_results(filename, arr):
     data_frame = pd.DataFrame(arr, columns=labels, index=img_names)
     data_frame.index.name = 'image'
     data_frame.to_csv(filename)
-    return None    
+    return None
 
 def get_blob_size(db, key='0'):
     """Return blob size
@@ -53,17 +55,23 @@ def levedb_to_array(filename, n_keys):
     blob_sz = get_blob_size(db)
     dim = blob_sz[0] * blob_sz[1] * blob_sz[2]
     db_mem = np.empty((n_keys, dim), np.float32)
+    labels = np.empty((n_keys), np.float32)
     for key, val in db.RangeIter():
         datum = caffe_pb2.Datum()
         datum.ParseFromString(val)
         arr = datum_to_array(datum)
         db_mem[int(key), :] = arr.flatten()
-    return db_mem
+        labels[int(key)] = datum.label
+    return db_mem, labels
 
-def main(output_file, input_file, n_keys, **kwargs):
-    aug_pred = levedb_to_array(input_file, n_keys)
-    pred = average_crops(aug_pred)
-    dump_results(output_file, pred)
+def main(output_file, input_file, n_keys, avg, **kwargs):
+    data, label = levedb_to_array(input_file, n_keys)
+
+    if avg:
+        data = average_crops(data)
+        label = label[0::10]
+
+    dump_csv(output_file, data)
     return None
 
 if __name__ == '__main__':
@@ -72,6 +80,7 @@ if __name__ == '__main__':
                    help=HELP_INPUT)
     p.add_argument('-n', '--n_keys', type=int, default=DFLT_NKEYS,
                    help=HELP_NKEYS)
+    p.add_argument('-a', '--avg', action='store_false', help=HELP_AVG)
     p.add_argument('output_file', type=str, help=HELP_OUTPUT)
     main(**vars(p.parse_args()))
 

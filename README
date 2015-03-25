@@ -13,4 +13,12 @@ projects
 4. Data Augmentation: just rotations, translations are considered on caffe
 interface if receptive field is smaller than image resolution
 
-5. 
+3RD-PARTY SOFTWARE
+------------------
+numpy (1.9.1)
+pandas (0.15.2)
+scikit-image (0.10.1)
+scikit-learn (0.15.2)
+caffe: checkout my repo (tag: kaggle.nsb), if things are going wrong.
+
+Probably more, you will discover it on demand ;)
